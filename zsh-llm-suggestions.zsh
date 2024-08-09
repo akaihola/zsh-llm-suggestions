@@ -1,4 +1,8 @@
 
+# Default prompt variables
+ZSH_LLM_SUGGESTIONS_GENERATE_PROMPT=${ZSH_LLM_SUGGESTIONS_GENERATE_PROMPT:-"You are a zsh shell expert, please write a ZSH command that solves my problem. You should only output the completed command, no need to include any other explanation."}
+ZSH_LLM_SUGGESTIONS_EXPLAIN_PROMPT=${ZSH_LLM_SUGGESTIONS_EXPLAIN_PROMPT:-"You are a zsh shell expert, please briefly explain how the given command works. Be as concise as possible. Use Markdown syntax for formatting."}
+
 # Color variables
 if type tput >/dev/null; then
     RESET="$(tput sgr0)"
@@ -39,7 +43,8 @@ zsh_llm_suggestions_run_query() {
   local query="$2"
   local result_file="$3"
   local mode="$4"
-  echo -n "$query" | eval $llm $mode >! $result_file
+  local prompt="$5"
+  echo -n "$prompt\n\n$query" | eval $llm $mode >! $result_file
 }
 
 zsh_llm_completion() {
@@ -59,6 +64,9 @@ zsh_llm_completion() {
     else
       ZSH_LLM_SUGGESTIONS_LAST_QUERY="$query"
     fi
+    prompt="$ZSH_LLM_SUGGESTIONS_GENERATE_PROMPT"
+  elif [[ "$mode" == "explain" ]]; then
+    prompt="$ZSH_LLM_SUGGESTIONS_EXPLAIN_PROMPT"
   fi
 
   # Temporary file to store the result of the background process
@@ -66,7 +74,7 @@ zsh_llm_completion() {
   # Remove the temporary file if it exists
   [[ -f "$result_file" ]] && rm -f "$result_file"
   # Run the actual query in the background (since it's long-running, and so that we can show a spinner)
-  read < <( zsh_llm_suggestions_run_query $llm $query $result_file $mode &! echo $! )
+  read < <( zsh_llm_suggestions_run_query $llm $query $result_file $mode $prompt &! echo $! )
   # Get the PID of the background process
   local pid=$REPLY
   # Call the spinner function and pass the PID

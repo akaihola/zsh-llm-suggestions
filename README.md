@@ -59,6 +59,14 @@ bindkey '^[^r' zsh_llm_suggestions_openrouter_explain # Ctrl + Alt + R to have O
 
 Make sure `python3` is installed.
 
+You can customize the prompts used for generating and explaining commands by setting these variables in your `.zshrc` before loading the plugin:
+
+```zsh
+# Custom prompts (optional)
+ZSH_LLM_SUGGESTIONS_GENERATE_PROMPT="You are a zsh expert. Write a command to solve this problem:"
+ZSH_LLM_SUGGESTIONS_EXPLAIN_PROMPT="Explain this zsh command in simple terms:"
+```
+
 All LLMs require a bit of configuration. Either follow the rest of the instructions
 here, or just enter something on the prompt (because an empty prompt won't run the
 LLM) and hit your configured keyboard shortcut. Instead of answering the prompt, it will
