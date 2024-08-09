@@ -77,29 +77,41 @@ zsh_llm_completion() {
 }
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "$0" )" &> /dev/null && pwd )
+VENV_DIR="$HOME/.local/share/zsh-llm-suggestions/venv"
+
+# Create virtualenv if it doesn't exist
+if [[ ! -d "$VENV_DIR" ]]; then
+  python3 -m venv "$VENV_DIR"
+  "$VENV_DIR/bin/pip" install pygments llm-openrouter openai
+fi
+
+# Function to run Python scripts in the virtualenv
+zsh_llm_suggestions_run_python() {
+  "$VENV_DIR/bin/python" "$@"
+}
 
 zsh_llm_suggestions_openai() {
-  zsh_llm_completion "$SCRIPT_DIR/zsh-llm-suggestions-openai.py" "generate"
+  zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-openai.py" "generate"
 }
 
 zsh_llm_suggestions_github_copilot() {
-  zsh_llm_completion "$SCRIPT_DIR/zsh-llm-suggestions-github-copilot.py" "generate"
+  zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-github-copilot.py" "generate"
 }
 
 zsh_llm_suggestions_openai_explain() {
-  zsh_llm_completion "$SCRIPT_DIR/zsh-llm-suggestions-openai.py" "explain"
+  zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-openai.py" "explain"
 }
 
 zsh_llm_suggestions_github_copilot_explain() {
-  zsh_llm_completion "$SCRIPT_DIR/zsh-llm-suggestions-github-copilot.py" "explain"
+  zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-github-copilot.py" "explain"
 }
 
 zsh_llm_suggestions_openrouter() {
-  zsh_llm_completion "$SCRIPT_DIR/zsh-llm-suggestions-openrouter.py" "generate"
+  zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-openrouter.py" "generate"
 }
 
 zsh_llm_suggestions_openrouter_explain() {
-  zsh_llm_completion "$SCRIPT_DIR/zsh-llm-suggestions-openrouter.py" "explain"
+  zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-openrouter.py" "explain"
 }
 
 zle -N zsh_llm_suggestions_openai
