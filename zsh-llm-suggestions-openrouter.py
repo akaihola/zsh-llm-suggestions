@@ -2,7 +2,6 @@
 
 import sys
 import os
-import subprocess
 
 MISSING_PREREQUISITES = "zsh-llm-suggestions missing prerequisites:"
 
@@ -33,17 +32,11 @@ You should only output the completed command, no need to include any other expla
     if mode == 'explain':
         system_message = """You are a zsh shell expert, please briefly explain how the given command works. Be as concise as possible. Use Markdown syntax for formatting."""
 
-    prompt = f"{system_message}\n\n{buffer}"
-
     try:
-        result = subprocess.run(
-            ["llm", "prompt", "-s", prompt, "-m", "openrouter/anthropic/claude-3.5-sonnet:beta", "--no-stream", "--no-log"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        output = result.stdout.strip()
-    except subprocess.CalledProcessError as e:
+        model = llm.get_model("openrouter/anthropic/claude-3.5-sonnet:beta")
+        response = model.prompt(buffer, system=system_message)
+        output = response.text().strip()
+    except Exception as e:
         print(f"Error running LLM command: {e}")
         return
 
