@@ -4,6 +4,8 @@ import sys
 import os
 import openai
 
+from llm import get_key
+
 MISSING_PREREQUISITES = "zsh-llm-suggestions missing prerequisites:"
 
 def highlight_explanation(explanation):
@@ -35,6 +37,11 @@ You should only output the completed command, no need to include any other expla
 
     try:
         model = llm.get_model("openrouter/anthropic/claude-3.5-sonnet:beta")
+
+        # Provide the API key, if one is needed and has been provided
+        if model.needs_key:
+            model.key = get_key(None, model.needs_key, model.key_env_var)
+
         response = model.prompt(buffer, system=system_message)
         output = response.text().strip()
     except openai.OpenAIError as e:
