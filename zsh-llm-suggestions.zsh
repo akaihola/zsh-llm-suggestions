@@ -1,26 +1,36 @@
 
+# Color variables
+if type tput >/dev/null; then
+    RESET="$(tput sgr0)"
+    RED="$(tput setaf 1)"
+    GREEN="$(tput setaf 2)"
+else
+    RESET=""
+    RED=""
+    GREEN=""
+fi
+
 zsh_llm_suggestions_spinner() {
     local pid=$1
     local delay=0.1
-    local spinstr='|/-\'
+    local spin='⣾⣽⣻⢿⡿⣟⣯⣷'
 
     cleanup() {
-      kill $pid
-      echo -ne "\e[?25h"
+        kill "$pid"
+        tput cnorm
     }
     trap cleanup SIGINT
-    
-    echo -ne "\e[?25l"
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-        local temp=${spinstr#?}
-        printf " [%c]" "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
 
-    echo -ne "\e[?25h"
+    i=0
+    tput civis
+    while kill -0 "$pid" 2>/dev/null; do
+        i=$(((i + 1) % ${#spin}))
+        printf "  %s%s%s" "${RED}" "${spin:$i:1}" "${RESET}"
+        sleep "$delay"
+        printf "\b\b\b"
+    done
+    printf "   \b\b\b"
+    tput cnorm
     trap - SIGINT
 }
 
