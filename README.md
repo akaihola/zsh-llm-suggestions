@@ -15,20 +15,46 @@ to explain the command.
 
 ## Installation
 
-Clone the repository:
+There are two ways to install this plugin:
+
+### Manual Installation
+
+1. Clone the repository:
 
 ```
-git clone https://github.com/stefanheule/zsh-llm-suggestions.git ~/zsh/zsh-llm-suggestions
+git clone https://github.com/stefanheule/zsh-llm-suggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-llm-suggestions
 ```
 
-Source the script and configure the hotkey in `.zshrc`:
+2. Add the plugin to your `.zshrc`:
 
+```zsh
+plugins=(... zsh-llm-suggestions)
 ```
-source ~/zsh/zsh-llm-suggestions/zsh-llm-suggestions.zsh
-bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command given a English description
-bindkey '^[^o' zsh_llm_suggestions_openai_explain # Ctrl + alt + O to have OpenAI explain a command
-bindkey '^p' zsh_llm_suggestions_github_copilot # Ctrl + P to have GitHub Copilot suggest a command given a English description
-bindkey '^[^p' zsh_llm_suggestions_github_copilot_explain # Ctrl + alt + P to have GitHub Copilot explain a command
+
+### Using a Plugin Manager
+
+If you're using a plugin manager, follow its instructions to add this plugin. For example, with [zplug](https://github.com/zplug/zplug), add the following to your `.zshrc`:
+
+```zsh
+zplug "stefanheule/zsh-llm-suggestions"
+```
+
+### Configuration
+
+The plugin comes with default keybindings, but you can customize them in your `.zshrc`:
+
+```zsh
+# OpenAI
+bindkey '^o' zsh_llm_suggestions_openai # Ctrl + O to have OpenAI suggest a command
+bindkey '^[^o' zsh_llm_suggestions_openai_explain # Ctrl + Alt + O to have OpenAI explain a command
+
+# GitHub Copilot
+bindkey '^p' zsh_llm_suggestions_github_copilot # Ctrl + P to have GitHub Copilot suggest a command
+bindkey '^[^p' zsh_llm_suggestions_github_copilot_explain # Ctrl + Alt + P to have GitHub Copilot explain a command
+
+# OpenRouter
+bindkey '^r' zsh_llm_suggestions_openrouter # Ctrl + R to have OpenRouter suggest a command
+bindkey '^[^r' zsh_llm_suggestions_openrouter_explain # Ctrl + Alt + R to have OpenRouter explain a command
 ```
 
 Make sure `python3` is installed.
