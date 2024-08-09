@@ -29,7 +29,7 @@ zsh_llm_suggestions_run_query() {
   local query="$2"
   local result_file="$3"
   local mode="$4"
-  echo -n "$query" | eval $llm $mode > $result_file
+  echo -n "$query" | eval $llm $mode >! $result_file
 }
 
 zsh_llm_completion() {
@@ -52,9 +52,11 @@ zsh_llm_completion() {
   fi
 
   # Temporary file to store the result of the background process
-  local result_file="/tmp/zsh-llm-suggestions-result"
+  local result_file="/tmp/zsh-llm-suggestions-result-$$"
+  # Remove the temporary file if it exists
+  [[ -f "$result_file" ]] && rm -f "$result_file"
   # Run the actual query in the background (since it's long-running, and so that we can show a spinner)
-  read < <( zsh_llm_suggestions_run_query $llm $query $result_file $mode & echo $! )
+  read < <( zsh_llm_suggestions_run_query $llm $query $result_file $mode &! echo $! )
   # Get the PID of the background process
   local pid=$REPLY
   # Call the spinner function and pass the PID
@@ -74,6 +76,9 @@ zsh_llm_completion() {
     echo ""
     zle reset-prompt
   fi
+
+  # Remove the temporary file after use
+  rm -f "$result_file"
 }
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "$0" )" &> /dev/null && pwd )
