@@ -85,6 +85,21 @@ if [[ ! -d "$VENV_DIR" ]]; then
   "$VENV_DIR/bin/pip" install pygments llm-openrouter openai
 fi
 
+# Set OpenRouter API key if not already set
+if [[ -z "$OPENROUTER_API_KEY" ]]; then
+  if command -v secret-tool &> /dev/null; then
+    export OPENROUTER_API_KEY=$(secret-tool lookup service openrouter.ai)
+  fi
+  if [[ -z "$OPENROUTER_API_KEY" ]]; then
+    echo "OpenRouter API key not set. Please set it using one of the following methods:"
+    echo "1. Run: llm keys set openrouter --value YOUR_API_KEY"
+    echo "2. Set the OPENROUTER_API_KEY environment variable"
+    echo "3. Store your key using secret-tool: secret-tool store --label='OpenRouter API Key' service openrouter.ai"
+  else
+    "$VENV_DIR/bin/llm" keys set openrouter --value "$OPENROUTER_API_KEY"
+  fi
+fi
+
 # Function to run Python scripts in the virtualenv
 zsh_llm_suggestions_run_python() {
   "$VENV_DIR/bin/python" "$@"
