@@ -44,17 +44,15 @@ You should only output the completed command, no need to include any other expla
 
         response = model.prompt(buffer, system=system_message)
         output = response.text().strip()
-    except openai.OpenAIError as e:
-        if "api_key" in str(e).lower():
+    except Exception as e:
+        error_message = str(e).lower()
+        if "api_key" in error_message or "authentication" in error_message:
             print("Error: OpenRouter API key not set or invalid. Please set it using one of the following methods:")
             print("1. Run: $VENV_DIR/bin/llm keys set openrouter --value YOUR_API_KEY")
             print("2. Set the OPENROUTER_API_KEY environment variable")
             print("3. Store your key using secret-tool: secret-tool store --label='OpenRouter API Key' service openrouter.ai")
         else:
-            print(f"Error running LLM command: {e}")
-        return
-    except Exception as e:
-        print(f"Error running LLM command: {e}")
+            print(f"Error running OpenRouter LLM command: {e}")
         return
 
     if mode == 'generate':

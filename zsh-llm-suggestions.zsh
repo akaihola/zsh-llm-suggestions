@@ -100,21 +100,6 @@ if [[ ! -d "$VENV_DIR" ]]; then
   "$VENV_DIR/bin/pip" install pygments llm-openrouter openai
 fi
 
-# Set OpenRouter API key if not already set
-if [[ -z "$OPENROUTER_API_KEY" ]]; then
-  if command -v secret-tool &> /dev/null; then
-    export OPENROUTER_API_KEY=$(secret-tool lookup service openrouter.ai)
-  fi
-  if [[ -z "$OPENROUTER_API_KEY" ]]; then
-    echo "OpenRouter API key not set. Please set it using one of the following methods:"
-    echo "1. Run: $VENV_DIR/bin/llm keys set openrouter --value YOUR_API_KEY"
-    echo "2. Set the OPENROUTER_API_KEY environment variable"
-    echo "3. Store your key using secret-tool: secret-tool store --label='OpenRouter API Key' service openrouter.ai"
-  else
-    "$VENV_DIR/bin/llm" keys set openrouter --value "$OPENROUTER_API_KEY"
-  fi
-fi
-
 # Function to run Python scripts in the virtualenv
 zsh_llm_suggestions_run_python() {
   "$VENV_DIR/bin/python" "$@"
@@ -136,11 +121,31 @@ zsh_llm_suggestions_github_copilot_explain() {
   zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-github-copilot.py" "explain"
 }
 
+zsh_llm_suggestions_setup_openrouter_api_key() {
+  if [[ -z "$OPENROUTER_API_KEY" ]]; then
+    if command -v secret-tool &> /dev/null; then
+      export OPENROUTER_API_KEY=$(secret-tool lookup service openrouter.ai)
+    fi
+    if [[ -z "$OPENROUTER_API_KEY" ]]; then
+      echo "OpenRouter API key not set. Please set it using one of the following methods:"
+      echo "1. Run: $VENV_DIR/bin/llm keys set openrouter --value YOUR_API_KEY"
+      echo "2. Set the OPENROUTER_API_KEY environment variable"
+      echo "3. Store your key using secret-tool: secret-tool store --label='OpenRouter API Key' service openrouter.ai"
+      return 1
+    else
+      "$VENV_DIR/bin/llm" keys set openrouter --value "$OPENROUTER_API_KEY"
+    fi
+  fi
+  return 0
+}
+
 zsh_llm_suggestions_openrouter() {
+  zsh_llm_suggestions_setup_openrouter_api_key || return
   zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-openrouter.py" "generate"
 }
 
 zsh_llm_suggestions_openrouter_explain() {
+  zsh_llm_suggestions_setup_openrouter_api_key || return
   zsh_llm_completion "zsh_llm_suggestions_run_python $SCRIPT_DIR/zsh-llm-suggestions-openrouter.py" "explain"
 }
 
