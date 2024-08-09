@@ -92,7 +92,7 @@ if [[ -z "$OPENROUTER_API_KEY" ]]; then
   fi
   if [[ -z "$OPENROUTER_API_KEY" ]]; then
     echo "OpenRouter API key not set. Please set it using one of the following methods:"
-    echo "1. Run: llm keys set openrouter --value YOUR_API_KEY"
+    echo "1. Run: $VENV_DIR/bin/llm keys set openrouter --value YOUR_API_KEY"
     echo "2. Set the OPENROUTER_API_KEY environment variable"
     echo "3. Store your key using secret-tool: secret-tool store --label='OpenRouter API Key' service openrouter.ai"
   else
