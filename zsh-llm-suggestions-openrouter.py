@@ -2,6 +2,7 @@
 
 import sys
 import os
+import openai
 
 MISSING_PREREQUISITES = "zsh-llm-suggestions missing prerequisites:"
 
@@ -36,7 +37,7 @@ You should only output the completed command, no need to include any other expla
         model = llm.get_model("openrouter/anthropic/claude-3.5-sonnet:beta")
         response = model.prompt(buffer, system=system_message)
         output = response.text().strip()
-    except llm.api.ApiError as e:
+    except openai.OpenAIError as e:
         if "api_key" in str(e).lower():
             print("Error: OpenRouter API key not set or invalid. Please set it using one of the following methods:")
             print("1. Run: $VENV_DIR/bin/llm keys set openrouter --value YOUR_API_KEY")
