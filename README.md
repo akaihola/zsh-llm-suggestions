@@ -59,55 +59,61 @@ bindkey '^[^r' zsh_llm_suggestions_openrouter_explain # Ctrl + Alt + R to have O
 
 Make sure `python3` is installed.
 
-Both LLMs require a bit of configuration. Either follow the rest of the instructions
+All LLMs require a bit of configuration. Either follow the rest of the instructions
 here, or just enter something on the prompt (because an empty prompt won't run the
 LLM) and hit your configured keyboard shortcut. Instead of answering the prompt, it will
 tell you how to finish the setup.
 
 For `zsh_llm_suggestions_openai` (OpenAI-based suggestions):
 - Set the `OPENAI_API_KEY` environment variable to your API key. You can get it
-  from [https://platform.openai.com/api-keys](platform.openai.com/api-keys). Note
+  from [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys). Note
   that every suggestion costs a small amount of money, you are solely responsible for
   these charges.
   ```
   export OPENAI_API_KEY="..."
   ```
-- Install the Python 3 package `openai`:
-  ```
-  pip3 install openai
-  ```
-- Optional, if you want syntax highlighting for the command explanation, install pygments
-  ```
-  pip3 install pygments
-  ```
+- The necessary Python packages will be installed automatically in a virtual environment.
 
 For `zsh_llm_suggestions_github_copilot` (GitHub Copilot suggestions):
-- Install GitHub CLI: Follow [https://github.com/cli/cli#installation](github.com/cli/cli#installation).
+- Install GitHub CLI: Follow [https://github.com/cli/cli#installation](https://github.com/cli/cli#installation).
 - Authenticate with GitHub:
   ```
-  /usr/bin/gh auth login --web -h github.com
+  gh auth login --web -h github.com
   ```
 - Install GitHub Copilot extension:
   ```
-  /usr/bin/gh extension install github/gh-copilot
+  gh extension install github/gh-copilot
   ```
+
+For `zsh_llm_suggestions_openrouter` (OpenRouter-based suggestions):
+- Set the `OPENROUTER_API_KEY` environment variable to your API key. You can get it
+  from [https://openrouter.ai/keys](https://openrouter.ai/keys). Note that every suggestion
+  costs a small amount of money, you are solely responsible for these charges.
+  ```
+  export OPENROUTER_API_KEY="..."
+  ```
+- Alternatively, you can store your API key using `secret-tool`:
+  ```
+  secret-tool store --label='OpenRouter API Key' service openrouter.ai
+  ```
+- The necessary Python packages will be installed automatically in a virtual environment.
 
 ## Usage
 
 ### LLM suggested commands
 
-Type out what you'd like to do in English, then hit ctrl+P or ctrl+O (or whatever hotkey)
-you configured. `zsh-llm-suggestions` will then query OpenAI or GitHub Copilot, and replace
-the query with the command suggested.
+Type out what you'd like to do in English, then hit the configured hotkey (e.g., Ctrl+P, Ctrl+O, or Ctrl+R).
+`zsh-llm-suggestions` will then query the selected LLM (OpenAI, GitHub Copilot, or OpenRouter), and replace
+the query with the suggested command.
 
-If you don't like the suggestion and think the LLM can do better, just hit ctrl+P/O again,
+If you don't like the suggestion and think the LLM can do better, just hit the hotkey again,
 and a new suggestion will be fetched.
 
 ### Explain commands using LLM
 
 If you typed a command (or maybe the LLM generated one) that you don't understand, hit
-ctrl+alt+O to have OpenAI explain the command in English, or hit ctrl+alt+P to have
-GitHub Copilot explain it.
+the configured explanation hotkey (e.g., Ctrl+Alt+O, Ctrl+Alt+P, or Ctrl+Alt+R) to have the
+selected LLM explain the command in English.
 
 ## Warning
 
@@ -118,6 +124,7 @@ There are some risks using `zsh-llm-suggestions`:
 
 ## Supported LLMs
 
-Right now, two LLMs are supported:
+Currently, three LLMs are supported:
 1. GitHub Copilot (via GitHub CLI). Requires a GitHub Copilot subscription.
 2. OpenAI. Requires an OpenAI API key. Currently uses `gpt-4-1106-preview`.
+3. OpenRouter. Requires an OpenRouter API key. Uses the model specified in the Python script (currently "openrouter/anthropic/claude-3.5-sonnet:beta").
