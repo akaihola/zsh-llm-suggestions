@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import sys
-import os
-import openai
 
 from llm import get_key
 
