@@ -46,9 +46,9 @@ You should only output the completed command, no need to include any other expla
         system_message = """You are a zsh shell expert, please briefly explain how the given command works. Be as concise as possible. Use Markdown syntax for formatting."""
 
     # Default model if environment variable is not set
-    default_model = "openrouter/anthropic/claude-3.5-sonnet:beta"
+    default_model = "openrouter/anthropic/claude-3.7-sonnet"
     # Get model from environment variable or use default
-    model_name = os.environ.get("OPENROUTER_MODEL", default_model)
+    model_name = os.environ.get("ZSH_LLM_SUGGESTIONS_OPENROUTER_MODEL", default_model)
 
     try:
         model = llm.get_model(model_name)
@@ -64,8 +64,8 @@ You should only output the completed command, no need to include any other expla
             f"Error: The specified model '{model_name}' is not supported or not found."
         )
         print(
-            "Please check the model name or use the default model"
-            " by unsetting the OPENROUTER_MODEL environment variable."
+            "Please check the model name or use the default model by"
+            " unsetting the ZSH_LLM_SUGGESTIONS_OPENROUTER_MODEL environment variable."
         )
         return
     except Exception as e:
