@@ -2,6 +2,8 @@
 # Default prompt variables
 ZSH_LLM_SUGGESTIONS_GENERATE_PROMPT=${ZSH_LLM_SUGGESTIONS_GENERATE_PROMPT:-"You are a zsh shell expert, please write a ZSH command that solves my problem. You should only output the completed command, no need to include any other explanation."}
 ZSH_LLM_SUGGESTIONS_EXPLAIN_PROMPT=${ZSH_LLM_SUGGESTIONS_EXPLAIN_PROMPT:-"You are a zsh shell expert, please briefly explain how the given command works. Be as concise as possible. Use Markdown syntax for formatting."}
+# Default model for OpenRouter
+export ZSH_LLM_SUGGESTIONS_OPENROUTER_MODEL=${ZSH_LLM_SUGGESTIONS_OPENROUTER_MODEL:-"openrouter/anthropic/claude-3.7-sonnet"}
 
 # Color variables
 if type tput >/dev/null; then
