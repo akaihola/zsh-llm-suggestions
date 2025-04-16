@@ -100,6 +100,11 @@ For `zsh_llm_suggestions_openrouter` (OpenRouter-based suggestions):
   ```
   export OPENROUTER_API_KEY="..."
   ```
+- Optionally, set the `OPENROUTER_MODEL` environment variable to specify which model to use:
+  ```
+  export OPENROUTER_MODEL="openrouter/anthropic/claude-3.5-sonnet:beta"
+  ```
+  If not set, the default model "openrouter/anthropic/claude-3.5-sonnet:beta" will be used.
 - Alternatively, you can store your API key using `secret-tool`:
   ```
   secret-tool store --label='OpenRouter API Key' service openrouter.ai
@@ -135,4 +140,4 @@ There are some risks using `zsh-llm-suggestions`:
 Currently, three LLMs are supported:
 1. GitHub Copilot (via GitHub CLI). Requires a GitHub Copilot subscription.
 2. OpenAI. Requires an OpenAI API key. Currently uses `gpt-4-1106-preview`.
-3. OpenRouter. Requires an OpenRouter API key. Uses the model specified in the Python script (currently "openrouter/anthropic/claude-3.5-sonnet:beta").
+3. OpenRouter. Requires an OpenRouter API key. Uses the model specified by the `OPENROUTER_MODEL` environment variable, or falls back to "openrouter/anthropic/claude-3.5-sonnet:beta" if not set.
